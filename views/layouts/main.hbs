@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta http-equiv="charset" charset="utf-8">
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <title>聊天室</title>
+</head>
+
+<body>
+    {{{body}}}
+    <script type="text/javascript" src="/js/common/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="/js/common/bootstrap.js"></script>
+    <script type="text/javascript" src="/js/common/vue.js"></script>
+    {{#if linkScoketIO}}
+    <script src="/js/common/socket.io.js"></script>
+    <script src="/js/chat.js"></script>
+    {{/if}}
+</body>
+
+</html>

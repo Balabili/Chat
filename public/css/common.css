@@ -1,0 +1,33 @@
+html,body{
+    padding: 0;
+    margin: 0;
+    height: 100%;
+}
+.test{
+    height: 100%;
+}
+.chat-container{
+    height: 100%;
+    background-color: lightgray;
+}
+.chat-dialog{
+    height: 75%;
+    background: lightgreen;
+}
+.chat-function{
+    height: 5%;
+    background: lightcoral;
+}
+.chat-inputbox{
+    height: 20%;
+}
+.inputTextArea{
+    resize: none;
+}
+.sendMsgBtn{
+    float: right;
+}
+.user-container{
+    height: 100%;
+    background-color: lightblue;
+}

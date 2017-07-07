@@ -1,0 +1,13 @@
+<div id="chat" class="row test">
+    <div class="chat-container col-md-9">
+        <div id="dialog" class="chat-dialog"></div>
+        <div class="chat-function"></div>
+        <div class="chat-inputbox">
+            <textarea id="textbox" class="form-control inputTextArea" rows="5"></textarea>
+            <button type="button" class="btn btn-default sendMsgBtn" id="sendMsg" v-on:click="sendMsg">发送</button>
+        </div>
+    </div>
+    <div class="user-container col-md-3">
+        <span>${onlineUserNumber}</span>
+    </div>
+</div>
