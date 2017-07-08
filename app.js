@@ -7,7 +7,7 @@ var user = require('./model/user.js');
 var flash = require('connect-flash');
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
-var checkLoginSession = require('./middlewares/auth.js');
+var checkAuth = require('./middlewares/auth.js');
 var handlebars = require('express-handlebars').create({
     defaultLayout: 'main', extname: 'hbs'
 });
@@ -16,7 +16,10 @@ app.set('view engine', 'hbs');
 app.set('port', process.env.PORT || 8090);
 app.use(express.static(__dirname + '/public'));
 app.use(flash());
-app.use(session());
+app.use(session({
+    secret: 'xxxxx',
+    cookie: { maxAge: 60 * 1000 * 30 }
+}));
 app.use(bodyparser());
 
 io.on('connection', function (socket) {
@@ -31,29 +34,31 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.get('/', checkLoginSession, function (req, res) {
+app.get('/', checkAuth.checkLoginSession, function (req, res) {
     res.render('login');
 });
 app.get('/logout/:name', function (req, res) {
-    res.session.user = null;
+    req.session.name = null;
+    user.deleteUser(req.params.name);
     req.flash('info', '登出成功');
-    res.render('login');
+    res.redirect('/');
 });
-app.get('/chat/:name', function (req, res) {
+app.get('/chat/:name', checkAuth.checkLoginDB, function (req, res) {
     res.render('chat', { linkScoketIO: true });
     app.set('loginname', req.params.name);
     setTimeout(function () {
-        user.addUser(req.params.name);
         io.sockets.emit('system', moment().format('YYYY-MM-DD HH:mm:ss'), req.params.name, 'login')
     }, 500);
 });
-app.post('/chat', checkLoginSession, function (req, res) {
+app.post('/chat', checkAuth.checkLoginSession, async function (req, res) {
     let name = req.body.loginname;
-    let userModel = user.findUserByName;
-    if (userModel) {
+    let userModel = await user.findUserByName(name);
+    if (userModel.length != 0) {
         req.flash('error', '该用户名已经存在');
         return;
     }
+    await user.addUser(name);
+    req.session.name = name;
     res.redirect('/chat/' + name);
 });
 server.listen(app.get('port'));

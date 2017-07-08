@@ -16,6 +16,9 @@ var app = new Vue({
             let textbox = document.getElementById("textbox"), msg = textbox.value;
             textbox.value = "";
             socket.emit('postMsg', msg);
+        },
+        logout: function () {
+            window.location.href = '/logout/你大爷';
         }
     },
     watch: {
@@ -24,6 +27,7 @@ var app = new Vue({
         }
     }
 });
+
 var socket = io.connect();
 socket.on('system', function (time, name, type) {
     let msg = name + ' ' + time + ' ' + (type === 'login' ? '进入聊天室' : '离开聊天室');

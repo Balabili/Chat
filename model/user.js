@@ -11,11 +11,12 @@ function addUser(username) {
             console.log('add user ' + username + ' successful.');
         }
     });
+
 }
 
 function deleteUser(username) {
     var userModel = { name: username };
-    User.remove(userModel, function () {
+    User.remove(userModel, function (err) {
         if (err) {
             console.log('delete user error:' + err);
         } else {
@@ -26,8 +27,12 @@ function deleteUser(username) {
 
 function findUserByName(name) {
     let userModel = { name: name };
-    User.find(userModel, function (err) {
-        console.log('findUserByName error:' + err);
+    return User.find(userModel, function (err, res) {
+        if (err) {
+            console.log('findUserByName error:' + err);
+        } else {
+            return res;
+        }
     });
 }
 
@@ -35,6 +40,8 @@ function findAllUser() {
     User.find({}, function (err, res) {
         if (err) {
             console.log('findAllUser Error:' + err);
+        } else {
+            return res;
         }
     });
 }
