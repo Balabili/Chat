@@ -1,3 +1,5 @@
+var socket = io.connect();
+
 var app = new Vue({
     el: "#chat",
     data: {
@@ -28,15 +30,17 @@ var app = new Vue({
     }
 });
 
-var socket = io.connect();
 socket.on('system', function (time, name, type) {
-    let msg = name + ' ' + time + ' ' + (type === 'login' ? '进入聊天室' : '离开聊天室');
-    let p = document.createElement('p'), dialog = document.getElementById("dialog");
-    p.innerText = msg;
-    p.style.color = "blue";
-    dialog.appendChild(p);
-    window.app.user.push(name);
-    Vue.set(window.app, 'user', window.app.user);
+    var isLogin = type === 'login';
+    let msg = name + ' ' + time + ' ' + (isLogin ? '进入聊天室' : '离开聊天室');
+    if (isLogin) {
+        let p = document.createElement('p'), dialog = document.getElementById("dialog");
+        p.innerText = msg;
+        p.style.color = "blue";
+        dialog.appendChild(p);
+        window.app.user.push(name);
+        Vue.set(app, 'user', app.user);
+    }
 });
 socket.on('newMsg', function (msg, username) {
     let p = document.createElement('p'), dialog = document.getElementById("dialog");

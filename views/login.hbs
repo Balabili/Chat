@@ -1,6 +1,5 @@
-<form action="/chat" method="post">
+<div id="login">
     <input id="loginText" type="text" name="loginname">
-    <input type="submit" value="登录">
+    <button v-on:click="login">登录</button>
     <span>{{infos}}</span>
-</form>
-<script src="/js/login.js"></script>
+</div>

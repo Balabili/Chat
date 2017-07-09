@@ -23,8 +23,15 @@ app.use(session({
 app.use(bodyparser());
 
 io.on('connection', function (socket) {
+    socket.on('online', async function (name) {
+        socket.name = name;
+        console.log('link' + socket.name);
+    });
     socket.on('postMsg', function (msg) {
         io.sockets.emit('newMsg', msg, app.get('loginname'));
+    });
+    socket.on('disconnect', function () {
+        console.log('dis:' + socket.name);
     });
 })
 
@@ -35,16 +42,19 @@ app.use(function (req, res, next) {
 });
 
 app.get('/', checkAuth.checkLoginSession, function (req, res) {
-    res.render('login');
+    res.render('login', { LoginContent: true });
 });
 app.get('/logout/:name', function (req, res) {
     req.session.name = null;
     user.deleteUser(req.params.name);
+    setTimeout(function () {
+        io.sockets.emit('system', moment().format('YYYY-MM-DD HH:mm:ss'), req.params.name, 'logout')
+    }, 500);
     req.flash('info', '登出成功');
     res.redirect('/');
 });
 app.get('/chat/:name', checkAuth.checkLoginDB, function (req, res) {
-    res.render('chat', { linkScoketIO: true });
+    res.render('chat', { ChatContent: true });
     app.set('loginname', req.params.name);
     setTimeout(function () {
         io.sockets.emit('system', moment().format('YYYY-MM-DD HH:mm:ss'), req.params.name, 'login')
@@ -59,6 +69,6 @@ app.post('/chat', checkAuth.checkLoginSession, async function (req, res) {
     }
     await user.addUser(name);
     req.session.name = name;
-    res.redirect('/chat/' + name);
+    res.send(name);
 });
 server.listen(app.get('port'));

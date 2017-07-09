@@ -13,9 +13,12 @@
     <script type="text/javascript" src="/js/common/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="/js/common/bootstrap.js"></script>
     <script type="text/javascript" src="/js/common/vue.js"></script>
-    {{#if linkScoketIO}}
-    <script src="/js/common/socket.io.js"></script>
+    <script type="text/javascript" src="/js/common/socket.io.js"></script>
+    {{#if ChatContent}}
     <script src="/js/chat.js"></script>
+    {{/if}}
+    {{#if LoginContent}}
+    <script src="/js/login.js"></script>
     {{/if}}
 </body>
 
