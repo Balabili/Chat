@@ -2,7 +2,7 @@ html,body{
     padding: 0;
     margin: 0;
     height: 100%;
-    background-image: url('../img/AprilIsYourLie.jpg');
+    /*background-image: url('../img/AprilIsYourLie.jpg');*/
 }
 .test{
     height: 100%;

@@ -25,6 +25,7 @@ app.use(bodyparser());
 io.on('connection', function (socket) {
     socket.on('online', function (name) {
         socket.name = name;
+        io.sockets.emit('system', moment().format('YYYY-MM-DD HH:mm:ss'), name, 'login');
     });
     socket.on('postMsg', function (msg) {
         io.sockets.emit('newMsg', msg, socket.name);
@@ -55,18 +56,14 @@ app.get('/', function (req, res) {
     res.render('login', { LoginContent: true });
 });
 app.get('/logout/:name', function (req, res) {
-    user.deleteUser(req.params.name);
     setTimeout(function () {
         io.sockets.emit('system', moment().format('YYYY-MM-DD HH:mm:ss'), req.params.name, 'logout');
     }, 500);
     req.flash('info', '登出成功');
     res.redirect('/');
 });
-app.get('/chat/:name', checkAuth.checkLoginDB, async function (req, res) {
+app.get('/chat/:name', checkAuth.checkLoginDB, function (req, res) {
     res.render('chat', { ChatContent: true });
-    setTimeout(function () {
-        io.sockets.emit('system', moment().format('YYYY-MM-DD HH:mm:ss'), req.params.name, 'login');
-    }, 500);
 });
 app.get('/findAllUsers', async function (req, res) {
     let users = await user.findAllUser();
