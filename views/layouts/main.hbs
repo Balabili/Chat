@@ -15,10 +15,10 @@
     <script type="text/javascript" src="/js/common/vue.js"></script>
     <script type="text/javascript" src="/js/common/socket.io.js"></script>
     {{#if ChatContent}}
-    <script src="/js/chat.js"></script>
+    <script src="/js/common/require.js" data-main="/js/chat.js"></script>
     {{/if}}
     {{#if LoginContent}}
-    <script src="/js/login.js"></script>
+    <script src="/js/common/require.js" data-main="/js/login.js"></script>
     {{/if}}
 </body>
 

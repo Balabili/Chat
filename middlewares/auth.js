@@ -16,6 +16,6 @@ async function checkLoginDB(req, res, next) {
 }
 
 module.exports = {
-    checkLoginSession: checkLoginSession,
+    //checkLoginSession: checkLoginSession,
     checkLoginDB: checkLoginDB
 };

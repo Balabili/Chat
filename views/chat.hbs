@@ -1,14 +1,17 @@
-<div id="chat" class="row test">
+<div id="chat" v-cloak class="row test">
     <div class="chat-container col-md-9">
-        <div id="dialog" class="chat-dialog"></div>
+        <div id="dialog" scroll="no" class="chat-dialog"></div>
         <div class="chat-function"></div>
         <div class="chat-inputbox">
-            <textarea id="textbox" class="form-control inputTextArea" rows="5"></textarea>
+            <textarea id="textbox" class="form-control inputTextArea" rows="5" v-on:keyup.13="sendMsg"></textarea>
             <button type="button" class="btn btn-default sendMsgBtn" id="sendMsg" v-on:click="sendMsg">发送</button>
         </div>
     </div>
     <div class="user-container col-md-3">
         <span>${onlineUserNumber}</span>
-        <button v-on:click="logout">登出</button>
+        <button v-on:click="logout">登出</button><br>
+        <ul>
+            <li v-for="user in users" v-bind:class="{colorRed:user.isMe}">${user.name}</li>
+        </ul>
     </div>
 </div>

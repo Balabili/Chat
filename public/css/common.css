@@ -2,21 +2,27 @@ html,body{
     padding: 0;
     margin: 0;
     height: 100%;
+    background-image: url('../img/AprilIsYourLie.jpg');
 }
 .test{
     height: 100%;
 }
+.demo{
+    margin: 300px auto;
+    width: 25%;
+}
 .chat-container{
     height: 100%;
-    background-color: lightgray;
 }
 .chat-dialog{
-    height: 75%;
-    background: lightgreen;
+    overflow:scroll;
+    width:auto;
+    height:600px;
 }
 .chat-function{
     height: 5%;
     background: lightcoral;
+    opacity:0.2;
 }
 .chat-inputbox{
     height: 20%;
@@ -29,5 +35,7 @@ html,body{
 }
 .user-container{
     height: 100%;
-    background-color: lightblue;
+}
+.colorRed{
+    color: red;
 }

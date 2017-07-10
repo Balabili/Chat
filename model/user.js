@@ -37,7 +37,7 @@ function findUserByName(name) {
 }
 
 function findAllUser() {
-    User.find({}, function (err, res) {
+    return User.find({}, function (err, res) {
         if (err) {
             console.log('findAllUser Error:' + err);
         } else {

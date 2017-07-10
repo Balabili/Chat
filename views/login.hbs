@@ -1,5 +1,7 @@
-<div id="login">
-    <input id="loginText" type="text" name="loginname">
-    <button v-on:click="login">登录</button>
+<div id="login" v-cloak class="form-group demo">
+    <label for="loginText">用户名</label>
+    <input id="loginText" type="text" class="form-control" name="loginname">
+    <button type="button" class="btn btn-primary" style="margin-top:10px;" v-on:click="login">进入聊天室</button>
     <span>{{infos}}</span>
+    <span v-if="isRepeat">${errorMsg}</span>
 </div>

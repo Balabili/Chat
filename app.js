@@ -23,17 +23,22 @@ app.use(session({
 app.use(bodyparser());
 
 io.on('connection', function (socket) {
-    socket.on('online', async function (name) {
+    socket.on('online', function (name) {
         socket.name = name;
-        console.log('link' + socket.name);
     });
     socket.on('postMsg', function (msg) {
-        io.sockets.emit('newMsg', msg, app.get('loginname'));
+        io.sockets.emit('newMsg', msg, socket.name);
+    });
+    socket.on('freshPage', function (data) {
+        socket.isFresh = data;
     });
     socket.on('disconnect', function () {
-        console.log('dis:' + socket.name);
+        if (socket.name && !socket.isFresh) {
+            io.sockets.emit('system', moment().format('YYYY-MM-DD HH:mm:ss'), socket.name, 'logout');
+            user.deleteUser(socket.name);
+        }
     });
-})
+});
 
 app.use(function (req, res, next) {
     res.locals.errors = req.flash('error');
@@ -41,34 +46,40 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.get('/', checkAuth.checkLoginSession, function (req, res) {
+app.use(function (err, req, res, next) {
+    console.log(err);
+    next();
+});
+
+app.get('/', function (req, res) {
     res.render('login', { LoginContent: true });
 });
 app.get('/logout/:name', function (req, res) {
-    req.session.name = null;
     user.deleteUser(req.params.name);
     setTimeout(function () {
-        io.sockets.emit('system', moment().format('YYYY-MM-DD HH:mm:ss'), req.params.name, 'logout')
+        io.sockets.emit('system', moment().format('YYYY-MM-DD HH:mm:ss'), req.params.name, 'logout');
     }, 500);
     req.flash('info', '登出成功');
     res.redirect('/');
 });
-app.get('/chat/:name', checkAuth.checkLoginDB, function (req, res) {
+app.get('/chat/:name', checkAuth.checkLoginDB, async function (req, res) {
     res.render('chat', { ChatContent: true });
-    app.set('loginname', req.params.name);
     setTimeout(function () {
-        io.sockets.emit('system', moment().format('YYYY-MM-DD HH:mm:ss'), req.params.name, 'login')
+        io.sockets.emit('system', moment().format('YYYY-MM-DD HH:mm:ss'), req.params.name, 'login');
     }, 500);
 });
-app.post('/chat', checkAuth.checkLoginSession, async function (req, res) {
+app.get('/findAllUsers', async function (req, res) {
+    let users = await user.findAllUser();
+    res.send(users);
+});
+app.post('/chat', async function (req, res) {
     let name = req.body.loginname;
     let userModel = await user.findUserByName(name);
     if (userModel.length != 0) {
-        req.flash('error', '该用户名已经存在');
+        res.send(false);
         return;
     }
     await user.addUser(name);
-    req.session.name = name;
     res.send(name);
 });
 server.listen(app.get('port'));
