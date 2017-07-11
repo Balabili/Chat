@@ -21,8 +21,7 @@ html,body{
 }
 .chat-function{
     height: 5%;
-    background: lightcoral;
-    opacity:0.2;
+    background-color: lightcoral;
 }
 .chat-inputbox{
     height: 20%;

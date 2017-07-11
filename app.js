@@ -1,5 +1,7 @@
 var express = require('express');
 var app = express();
+var fs = require('fs');
+var formidable = require('formidable');
 var bodyparser = require('body-parser');
 var session = require('express-session');
 var moment = require('moment');
@@ -78,5 +80,34 @@ app.post('/chat', async function (req, res) {
     }
     await user.addUser(name);
     res.send(name);
+});
+app.post('/sendImg', function (req, res) {
+    var form = formidable.IncomingForm();
+    form.parse(req, function (err, fields, files) {
+        let img = files.uploadImg;
+        let imgType = img.name.split('.')[1];
+        let mimeType = "";
+        switch (imgType) {
+            case 'jpg':
+                mimeType = "image/jpeg";
+                break;
+            case 'png':
+                mimeType = "image/png";
+                break;
+            case 'gif':
+                mimeType = "image/gif";
+                break;
+            default:
+                res.send('type error');
+                return;
+        }
+        fs.readFile(img.path, 'base64', function (err, data) {
+            if (err) {
+                console.log(err);
+            } else {
+                io.sockets.emit('sendImg', mimeType, data);
+            }
+        });
+    });
 });
 server.listen(app.get('port'));

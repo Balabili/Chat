@@ -1,7 +1,24 @@
 <div id="chat" v-cloak class="row test">
     <div class="chat-container col-md-9">
         <div id="dialog" scroll="no" class="chat-dialog"></div>
-        <div class="chat-function"></div>
+        <div class="chat-function">
+            <div class="row">
+                <div class="col-md-2">
+                    <select id="fontColor" class="form-control">
+                        <option v-for="fontColor in fontColors">${fontColor}</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="button" v-on:click="sendImg" class="btn btn-default">发送本地图片</button>
+                    <form id="uploadForm" style="display:none;">
+                        <input id="uploadImg" name="uploadImg" type="file" v-on:change="uploadImg" accept=".jpg,.png,.gif">
+                    </form>
+                </div>
+                <div class="col-md-2">
+                    <button type="button" v-on:click="clear" class="btn btn-default">清屏</button>
+                </div>
+            </div>
+        </div>
         <div class="chat-inputbox">
             <textarea id="textbox" class="form-control inputTextArea" rows="5" v-on:keyup.13="sendMsg"></textarea>
             <button type="button" class="btn btn-default sendMsgBtn" id="sendMsg" v-on:click="sendMsg">发送</button>
