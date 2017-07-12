@@ -1,12 +1,17 @@
-var User = require('../schema/user.js');
+let mongoose = require('../lib/mongo.js'),
+    Schema = mongoose.Schema,
+    UserSchema = new Schema({
+        name: { type: String }
+    }),
+    User = mongoose.model('User', UserSchema);
 
 function addUser(username) {
-    var user = new User({
+    let user = new User({
         name: username
     });
     user.save(function (err, res) {
         if (err) {
-            console.log("add user error:" + err);
+            console.log('add user error:' + err);
         } else {
             console.log('add user ' + username + ' successful.');
         }
@@ -15,7 +20,7 @@ function addUser(username) {
 }
 
 function deleteUser(username) {
-    var userModel = { name: username };
+    let userModel = { name: username };
     User.remove(userModel, function (err) {
         if (err) {
             console.log('delete user error:' + err);
@@ -51,4 +56,4 @@ module.exports = {
     deleteUser: deleteUser,
     findUserByName: findUserByName,
     findAllUser: findAllUser
-}
+};

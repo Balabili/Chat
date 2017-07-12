@@ -1,11 +1,9 @@
 requirejs.config({
-    baseUrl: '/js/common',
+    baseUrl: '/js/common'
 });
 require(['utility'], function (utility) {
-    var socket = io.connect();
-
-    var app = new Vue({
-        el: "#login",
+    let app = new Vue({
+        el: '#login',
         data: {
             isRepeat: false,
             errorMsg: '用户名已存在'
@@ -13,7 +11,7 @@ require(['utility'], function (utility) {
         delimiters: ['${', '}'],
         methods: {
             login: function () {
-                var self = this, username = $("#loginText").val();
+                let self = this, username = $('#loginText').val();
                 $.ajax({
                     url: '/chat',
                     type: 'post',
@@ -22,7 +20,7 @@ require(['utility'], function (utility) {
                         if (result) {
                             self.isRepeat = false;
                             utility.cookieHelper.setCookie('name', username);
-                            window.location.href = "/chat/" + username;
+                            window.location.href = '/chat/' + username;
                         } else {
                             self.isRepeat = true;
                         }

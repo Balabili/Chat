@@ -10,8 +10,15 @@
                 </div>
                 <div class="col-md-2">
                     <button type="button" v-on:click="sendImg" class="btn btn-default">发送本地图片</button>
-                    <form id="uploadForm" style="display:none;">
+                    <form id="uploadImgForm" style="display:none;">
                         <input id="uploadImg" name="uploadImg" type="file" v-on:change="uploadImg" accept=".jpg,.png,.gif">
+                    </form>
+                </div>
+                <div class="col-md-2">
+                    <button type="button" v-on:click="sendFile" class="btn btn-default">发送文件</button>
+                    <form id="uploadFileForm" style="display:none;" method="post" action="/sendFile" enctype="multipart/form-data">
+                        <input id="uploadFile" name="uploadFile" type="file" v-on:change="uploadFile">
+                        <input id="submitFile" type="submit" value="submit" >
                     </form>
                 </div>
                 <div class="col-md-2">

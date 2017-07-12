@@ -18,5 +18,10 @@
     "moment": "^2.18.1",
     "mongoose": "^4.11.1",
     "socket.io": "^2.0.3"
+  },
+  "devDependencies": {
+    "babel-eslint": "^7.2.3",
+    "eslint": "^4.2.0",
+    "eslint-config-google": "^0.9.1"
   }
 }
