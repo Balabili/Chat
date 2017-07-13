@@ -54,8 +54,8 @@ module.exports = function (app, user, io) {
                 if (e) {
                     console.log(err);
                 } else {
-                    io.sockets.emit('sendImg', mimeType, data);
-                    res.send(true);
+                    // io.sockets.emit('sendImg', mimeType, data);
+                    res.send([mimeType, data]);
                 }
             });
         });
@@ -63,13 +63,20 @@ module.exports = function (app, user, io) {
     app.post('/sendFile', function (req, res) {
         let form = formidable.IncomingForm();
         form.parse(req, function (err, fields, files) {
-            let file = files.uploadFile;
-            fs.readFile(file.path, function (e, data) {
-                res.set({
-                    'Content-type': 'application/octet-stream',
-                    'Content-Disposition': 'attachment;filename=' + encodeURI(file)
-                });
-            });
+            let file = files.uploadFile,
+                fileType = file.name.split('.')[1],
+                fileName = file.name,
+                fileTempName = new Date().getTime() + '.' + fileType,
+                filepath = 'file/' + fileTempName,
+                fileBuffer = fs.readFileSync(file.path),
+                writeStream = fs.createWriteStream(filepath);
+            writeStream.write(fileBuffer);
+            writeStream.end();
+            res.send([fileName, fileTempName]);
         });
+    });
+    app.get('/downloadFile/:filename/:fileTempname', (req, res) => {
+        let filepath = 'file/' + req.params.fileTempname;
+        res.download(filepath, req.params.filename);
     });
 };

@@ -16,9 +16,8 @@
                 </div>
                 <div class="col-md-2">
                     <button type="button" v-on:click="sendFile" class="btn btn-default">发送文件</button>
-                    <form id="uploadFileForm" style="display:none;" method="post" action="/sendFile" enctype="multipart/form-data">
+                    <form id="uploadFileForm" style="display:none;">
                         <input id="uploadFile" name="uploadFile" type="file" v-on:change="uploadFile">
-                        <input id="submitFile" type="submit" value="submit" >
                     </form>
                 </div>
                 <div class="col-md-2">

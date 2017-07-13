@@ -30,6 +30,12 @@ io.on('connection', function (socket) {
     socket.on('postMsg', function (msg) {
         io.sockets.emit('newMsg', msg, socket.name);
     });
+    socket.on('postImg', function (mimeType, data) {
+        io.sockets.emit('sendImg', mimeType, data, socket.name);
+    });
+    socket.on('postFile', function (fileName, fileTempName) {
+        io.sockets.emit('sendFile', fileName, fileTempName, socket.name);
+    });
     socket.on('freshPage', function (data) {
         socket.isFresh = data;
     });
@@ -55,7 +61,7 @@ app.use(function (err, req, res, next) {
 router(app, user, io);
 
 app.get('/', function (req, res) {
-    res.set();
+    res.download('');
 });
 
 server.listen(app.get('port'));

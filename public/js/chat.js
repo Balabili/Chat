@@ -17,8 +17,8 @@ require(['utility'], function (utility) {
         },
         created: function () {
             document.onkeydown = function (e) {
-                let confirm = window.confirm('如果刷新页面，聊天记录将会消失，你确定要离开吗？');
                 if (e.keyCode === 116) {
+                    let confirm = window.confirm('如果刷新页面，聊天记录将会消失，你确定要离开吗？');
                     if (confirm) {
                         socket.emit('freshPage', true);
                         window.location.reload();
@@ -43,6 +43,7 @@ require(['utility'], function (utility) {
                 socket.emit('postMsg', msg);
             },
             sendImg: function () {
+                $('#uploadImg').val('');
                 $('#uploadImg').click();
             },
             sendFile: function () {
@@ -50,9 +51,9 @@ require(['utility'], function (utility) {
                 $('#uploadFile').click();
             },
             uploadImg: function () {
-                let imgName = $('#uploadImg').val(), imgType = imgName.split('.')[1],
-                    formData = new FormData($('#uploadImgForm')[0]);
+                let imgName = $('#uploadImg').val(), imgType = imgName.split('.')[1];
                 if (imgName !== '' && (imgType === 'jpg' || imgType === 'png' || imgType === 'gif')) {
+                    let formData = new FormData($('#uploadImgForm')[0]);
                     $.ajax({
                         url: '/sendImg',
                         type: 'post',
@@ -61,7 +62,7 @@ require(['utility'], function (utility) {
                         processData: false,
                         contentType: false,
                         success: function (result) {
-                            $('#uploadImg').val('');
+                            socket.emit('postImg', ...result);
                         }, error: function (err) {
                             console.log(err);
                         }
@@ -69,7 +70,22 @@ require(['utility'], function (utility) {
                 }
             },
             uploadFile: function () {
-                $('#submitFile').click();
+                let fileName = $('#uploadFile').val(), formData = new FormData($('#uploadFileForm')[0]);
+                if (fileName !== '') {
+                    $.ajax({
+                        url: '/sendFile',
+                        type: 'post',
+                        data: formData,
+                        enctype: 'multipart/form-data',
+                        processData: false,
+                        contentType: false,
+                        success: function (result) {
+                            socket.emit('postFile', ...result);
+                        }, error: function (err) {
+                            console.log(err);
+                        }
+                    });
+                }
             },
             clear: function () {
                 document.getElementById('dialog').innerHTML = '';
@@ -125,12 +141,37 @@ require(['utility'], function (utility) {
         dialog.appendChild(p);
         dialog.scrollTop = dialog.scrollHeight;
     });
-    socket.on('sendImg', function (mimeType, data) {
-        let img = document.createElement('img'), dialog = document.getElementById('dialog');
+    socket.on('sendImg', function (mimeType, data, username) {
+        let div = document.createElement('div'), img = document.createElement('img'),
+            dialog = document.getElementById('dialog');
         img.src = 'data:' + mimeType + ';base64,' + data;
-        img.style.clear = 'both';
-        dialog.appendChild(img);
+        div.style.clear = 'both';
+        if (username === app.currentUser) {
+            div.style.cssFloat = 'right';
+        } else {
+            let span = document.createElement('span');
+            span.innerText = username + ':';
+            div.appendChild(span);
+        }
+        div.appendChild(img);
+        dialog.appendChild(div);
         dialog.scrollTop = dialog.scrollHeight;
-        $('#uploadImg').val('');
+    });
+    socket.on('sendFile', function (fileName, fileTempName, name) {
+        let div = document.createElement('div'), download = document.createElement('a'),
+            dialog = document.getElementById('dialog');
+        download.href = '/downloadFile/' + fileName + '/' + fileTempName;
+        download.innerText = fileName;
+        if (name === app.currentUser) {
+            div.style.cssFloat = 'right';
+        } else {
+            let span = document.createElement('span');
+            span.innerText = name + ':';
+            div.appendChild(span);
+        }
+        div.style.clear = 'both';
+        div.appendChild(download);
+        dialog.appendChild(div);
+        dialog.scrollTop = dialog.scrollHeight;
     });
 });
