@@ -28,8 +28,6 @@ require(['utility'], function (utility) {
                 }
             };
         },
-        computed: function () {
-        },
         delimiters: ['${', '}'],
         methods: {
             initData: function () {
@@ -94,9 +92,6 @@ require(['utility'], function (utility) {
                 this.currentUser = utility.cookieHelper.delCookie('name');
                 window.location.href = '/logout/' + this.currentUser;
             }
-        },
-        watch: {
-
         }
     });
 

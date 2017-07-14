@@ -1,4 +1,4 @@
-<div id="chat" v-cloak class="row test">
+<div id="chat" v-cloak class="row loginContainer" style="margin-right:0;">
     <div class="chat-container col-md-9">
         <div id="dialog" scroll="no" class="chat-dialog"></div>
         <div class="chat-function">
@@ -8,20 +8,19 @@
                         <option v-for="fontColor in fontColors">${fontColor}</option>
                     </select>
                 </div>
-                <div class="col-md-2">
+                <div class="btn-group" role="group" aria-label="...">
                     <button type="button" v-on:click="sendImg" class="btn btn-default">发送本地图片</button>
+                    <button type="button" v-on:click="sendFile" class="btn btn-default">发送文件</button>
+                    <button type="button" v-on:click="clear" class="btn btn-default">清屏</button>
+                </div>
+                <button v-on:click="logout" type="button" class="btn btn-default" style="float:right;margin-right:15px;">登出</button><br>
+                <div style="display:none;">
                     <form id="uploadImgForm" style="display:none;">
                         <input id="uploadImg" name="uploadImg" type="file" v-on:change="uploadImg" accept=".jpg,.png,.gif">
                     </form>
-                </div>
-                <div class="col-md-2">
-                    <button type="button" v-on:click="sendFile" class="btn btn-default">发送文件</button>
                     <form id="uploadFileForm" style="display:none;">
                         <input id="uploadFile" name="uploadFile" type="file" v-on:change="uploadFile">
                     </form>
-                </div>
-                <div class="col-md-2">
-                    <button type="button" v-on:click="clear" class="btn btn-default">清屏</button>
                 </div>
             </div>
         </div>
@@ -31,10 +30,9 @@
         </div>
     </div>
     <div class="user-container col-md-3">
-        <span>${onlineUserNumber}</span>
-        <button v-on:click="logout">登出</button><br>
-        <ul>
-            <li v-for="user in users" v-bind:class="{colorRed:user.isMe}">${user.name}</li>
+        <h4>${onlineUserNumber}</h4>
+        <ul class="list-group">
+            <li class="list-group-item" v-for="user in users" v-bind:class="{colorRed:user.isMe}">${user.name}</li>
         </ul>
     </div>
 </div>

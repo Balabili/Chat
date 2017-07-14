@@ -2,7 +2,7 @@ const fs = require('fs'),
     formidable = require('formidable'),
     checkAuth = require('../middlewares/auth.js'),
     moment = require('moment');
-module.exports = function (app, user, io) {
+module.exports = function (app, user, io, logger) {
     app.get('/', function (req, res) {
         res.render('login', { LoginContent: true });
     });
@@ -17,25 +17,39 @@ module.exports = function (app, user, io) {
         res.render('chat', { ChatContent: true });
     });
     app.get('/findAllUsers', async (req, res) => {
-        let users = await user.findAllUser();
-        res.send(users);
+        try {
+            let users = await user.findAllUser();
+            res.send(users);
+        } catch (error) {
+            logger.err(error);
+        }
+
     });
     app.post('/chat', async (req, res) => {
-        let name = req.body.loginname,
-            userModel = await user.findUserByName(name);
-        if (userModel.length !== 0) {
-            res.send(false);
-            return;
+        try {
+            let name = req.body.loginname, userModel = [], passRegValidation = false;
+            passRegValidation = /^[a-zA-Z0-9\u4e00-\u9fa5]+$/.test(name);
+            if (!passRegValidation) {
+                res.send([false, '用户名不合法']);
+                return;
+            }
+            userModel = passRegValidation ? await user.findUserByName(name) : [];
+            if (userModel.length !== 0) {
+                res.send([false, '用户名已经存在']);
+                return;
+            }
+            await user.addUser(name);
+            res.send(name);
+        } catch (error) {
+            logger.error(error);
         }
-        await user.addUser(name);
-        res.send(name);
     });
-    app.post('/sendImg', function (req, res) {
+    app.post('/sendImg', (req, res) => {
         let form = formidable.IncomingForm();
         form.parse(req, function (err, fields, files) {
             let img = files.uploadImg,
                 imgType = img.name.split('.')[1],
-                mimeType = '';
+                mimeType = '', fileData = fs.readFileSync(img.path, 'base64');
             switch (imgType) {
                 case 'jpg':
                     mimeType = 'image/jpeg';
@@ -50,17 +64,10 @@ module.exports = function (app, user, io) {
                     res.send('type error');
                     return;
             }
-            fs.readFile(img.path, 'base64', function (e, data) {
-                if (e) {
-                    console.log(err);
-                } else {
-                    // io.sockets.emit('sendImg', mimeType, data);
-                    res.send([mimeType, data]);
-                }
-            });
+            res.send([mimeType, fileData]);
         });
     });
-    app.post('/sendFile', function (req, res) {
+    app.post('/sendFile', (req, res) => {
         let form = formidable.IncomingForm();
         form.parse(req, function (err, fields, files) {
             let file = files.uploadFile,
