@@ -25,6 +25,7 @@ const express = require('express'),
     handlebars = require('express-handlebars').create({
         defaultLayout: 'main', extname: 'hbs'
     });
+fs.existsSync('file') || fs.mkdirSync('file');
 fs.existsSync('logs') || fs.mkdirSync('logs');
 app.engine('hbs', handlebars.engine);
 app.set('view engine', 'hbs');

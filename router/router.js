@@ -7,9 +7,6 @@ module.exports = function (app, user, io, logger) {
         res.render('login', { LoginContent: true });
     });
     app.get('/logout/:name', function (req, res) {
-        setTimeout(function () {
-            io.sockets.emit('system', moment().format('YYYY-MM-DD HH:mm:ss'), req.params.name, 'logout');
-        }, 500);
         req.flash('info', '登出成功');
         res.redirect('/');
     });
