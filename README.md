@@ -12,4 +12,4 @@
 
 4.支持发送文件
 
-![写入文件](/public/img/chat.gjf)
+![操作演示](/public/img/chat.gif)
